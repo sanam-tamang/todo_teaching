@@ -13,4 +13,10 @@ class TodoCubit extends Cubit<TodoState> {
     _todos.add(todo);
     emit(TodoState(todos: _todos));
   }
+
+  void delete(Todo todo) {
+    _todos = List.from(_todos);
+    _todos.remove(todo);
+    emit(TodoState(todos: _todos));
+  }
 }

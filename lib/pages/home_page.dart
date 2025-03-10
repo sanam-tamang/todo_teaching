@@ -15,6 +15,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("To-do")),
       body: BlocBuilder<TodoCubit, TodoState>(
         builder: (context, state) {
           return ListView.builder(
@@ -29,9 +30,21 @@ class _HomePageState extends State<HomePage> {
                 child: Card(
                   color: Colors.blueGrey[100],
                   child: ListTile(
-                    trailing: Checkbox(
-                      value: todo.isCompleted,
-                      onChanged: (value) {},
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Checkbox(
+                          value: todo.isCompleted,
+                          onChanged: (value) {},
+                        ),
+
+                        IconButton(
+                          onPressed: () {
+                            context.read<TodoCubit>().delete(todo);
+                          },
+                          icon: Icon(Icons.delete, color: Colors.red),
+                        ),
+                      ],
                     ),
                     title: Text(todo.title),
                     subtitle: Text(todo.description),
