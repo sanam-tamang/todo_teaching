@@ -3,10 +3,9 @@ part of 'todo_cubit.dart';
 
 class TodoState extends Equatable {
   final List<Todo> todos;
-  const TodoState({
-    required this.todos,
-  });
+  final TodoStatus status;
+  const TodoState({required this.todos, this.status = TodoStatus.pending});
 
   @override
-  List<Object> get props => [todos];
+  List<Object> get props => [todos, status];
 }

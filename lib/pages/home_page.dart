@@ -14,50 +14,72 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("To-do")),
-      body: BlocBuilder<TodoCubit, TodoState>(
-        builder: (context, state) {
-          return ListView.builder(
-            itemCount: state.todos.length,
-            itemBuilder: (context, index) {
-              final Todo todo = state.todos[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
-                child: Card(
-                  color: Colors.blueGrey[100],
-                  child: ListTile(
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Checkbox(
-                          value: todo.isCompleted,
-                          onChanged: (value) {},
-                        ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("To-do"),
 
-                        IconButton(
-                          onPressed: () {
-                            context.read<TodoCubit>().delete(todo);
-                          },
-                          icon: Icon(Icons.delete, color: Colors.red),
-                        ),
-                      ],
-                    ),
-                    title: Text(todo.title),
-                    subtitle: Text(todo.description),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(40),
+            child: TabBar(
+              onTap: (index) {
+                context.read<TodoCubit>().filter(TodoStatus.values[index]);
+              },
+              tabs: [
+                Tab(child: Text("Pending")),
+                Tab(child: Text("Completed")),
+              ],
+            ),
+          ),
+        ),
+        body: BlocBuilder<TodoCubit, TodoState>(
+          builder: (context, state) {
+            return ListView.builder(
+              itemCount: state.todos.length,
+              itemBuilder: (context, index) {
+                final Todo todo = state.todos[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
                   ),
-                ),
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showDialog, // () => _showDialog()
-        child: Icon(Icons.add),
+                  child: Card(
+                    color: Colors.blueGrey[100],
+                    child: ListTile(
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: todo.isCompleted,
+                            onChanged: (isCompleted) {
+                              context.read<TodoCubit>().update(
+                                todo.copyWith(isCompleted: isCompleted),
+                              );
+                            },
+                          ),
+
+                          IconButton(
+                            onPressed: () {
+                              context.read<TodoCubit>().delete(todo);
+                            },
+                            icon: Icon(Icons.delete, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                      title: Text(todo.title),
+                      subtitle: Text(todo.description),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _showDialog, // () => _showDialog()
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }

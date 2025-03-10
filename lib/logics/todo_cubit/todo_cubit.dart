@@ -11,12 +11,43 @@ class TodoCubit extends Cubit<TodoState> {
   void add(Todo todo) {
     _todos = List.from(_todos);
     _todos.add(todo);
-    emit(TodoState(todos: _todos));
+    filter(state.status);
   }
 
   void delete(Todo todo) {
     _todos = List.from(_todos);
     _todos.remove(todo);
-    emit(TodoState(todos: _todos));
+    filter(state.status);
+  }
+
+  void update(Todo todo) {
+    _todos = List.from(_todos);
+    _todos =
+        _todos.map((e) {
+          if (e.id == todo.id) {
+            return todo;
+          }
+          return e;
+        }).toList();
+
+    filter(state.status);
+  }
+
+  void filter(TodoStatus status) {
+    if (status == TodoStatus.pending) {
+      List<Todo> todos = List.from(_todos);
+
+      List<Todo> newTodos = todos.where((e) => !e.isCompleted).toList();
+
+      emit(TodoState(todos: newTodos, status: status));
+    } else {
+      List<Todo> todos = List.from(_todos);
+
+      List<Todo> newTodos = todos.where((e) => e.isCompleted).toList();
+
+      emit(TodoState(todos: newTodos, status: status));
+    }
   }
 }
+
+enum TodoStatus { pending, completed }
