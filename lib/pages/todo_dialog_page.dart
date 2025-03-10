@@ -57,5 +57,7 @@ class _TodoDialogPageState extends State<TodoDialogPage> {
     );
 
     context.read<TodoCubit>().add(todo);
+
+    Navigator.of(context).pop();
   }
 }
